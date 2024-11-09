@@ -1,0 +1,16 @@
+export interface PostMetadata {
+  title: string;
+  date: Date;
+  dateString: string;
+  thumbnail: string;
+  desc: string;
+}
+
+export interface Post extends PostMetadata {
+  url: string;
+  slug: string;
+  categoryPath: string;
+  content: string;
+  readingMinutes: number;
+  categoryPublicName: string;
+}
