@@ -1,6 +1,6 @@
 import { PostHeader } from "@/components/post/PostHeader";
 import { PostBody } from "@/components/post/PostBody";
-import { getPostDetail } from "@/lib/post";
+import { getPostFilePaths, parsePostAbstract, getPostDetail } from "@/lib/post";
 
 type Props = {
   params: Promise<{
@@ -8,6 +8,17 @@ type Props = {
     slug: string;
   }>;
 };
+
+export function generateStaticParams() {
+  const postPaths: string[] = getPostFilePaths();
+  const postAbstract = postPaths.map((path) => parsePostAbstract(path));
+  const paramList = postAbstract.map((item) => ({
+    category: item.categoryPath,
+    slug: item.slug,
+  }));
+
+  return paramList;
+}
 
 export default async function PostPage({ params }: Props) {
   const { category, slug } = await params;

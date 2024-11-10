@@ -1,12 +1,19 @@
 import { Post, PostMetadata } from "@/types/post";
 import dayjs from "dayjs";
 import fs from "fs";
+import { sync } from "glob";
 import matter from "gray-matter";
 import path from "path";
 import readingTime from "reading-time";
 
 const BASE_PATH = "/src/posts";
 const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
+
+export const getPostFilePaths = (category?: string) => {
+  const folder = category || "**";
+  const postPaths: string[] = sync(`${POSTS_PATH}/${folder}/**/*.mdx`);
+  return postPaths;
+};
 
 const parsePost = async (postPath: string): Promise<Post> => {
   const postAbstract = parsePostAbstract(postPath);
@@ -18,7 +25,7 @@ const parsePost = async (postPath: string): Promise<Post> => {
   };
 };
 
-const parsePostAbstract = (postPath: string) => {
+export const parsePostAbstract = (postPath: string) => {
   const filePath = postPath
     .slice(postPath.indexOf(BASE_PATH))
     .replace(`${BASE_PATH}/`, "")
