@@ -48,9 +48,7 @@ const parsePostDetail = async (postPath: string) => {
 
   const grayMatter = data as PostMetadata;
   const readingMinutes = Math.ceil(readingTime(content).minutes);
-  const dateString = dayjs(grayMatter.date)
-    .locale("ko")
-    .format("YYYY년 MM월 DD일");
+  const dateString = dayjs(grayMatter.date).locale("ko").format("YYYY년 MM월 DD일");
 
   return { ...grayMatter, dateString, content, readingMinutes };
 };
@@ -66,4 +64,19 @@ export const getPostDetail = async (category: string, slug: string) => {
   const filePath = `${POSTS_PATH}/${category}/${slug}/content.mdx`;
   const detail = await parsePost(filePath);
   return detail;
+};
+
+export const getPostList = async (category?: string): Promise<Post[]> => {
+  const postPaths = getPostFilePaths(category);
+  const postList = await Promise.all(postPaths.map((postPath) => parsePost(postPath)));
+  return postList;
+};
+
+const sortPostList = (postList: Post[]) => {
+  return postList.sort((a, b) => (a.date > b.date ? -1 : 1));
+};
+
+export const getLatestPostList = async (category?: string) => {
+  const postList = await getPostList(category);
+  return sortPostList(postList);
 };
