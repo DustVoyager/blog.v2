@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSpyElem } from "@/hook/useSpy";
 import { cn } from "@/lib/utils";
 
 const navList = [
@@ -11,10 +12,15 @@ const navList = [
 
 export default function Header() {
   const pathname = usePathname();
+  const { ref, marginTop } = useSpyElem(65);
 
   return (
-    <header className="fixed w-full py-6 border-b bg-white z-10">
-      <div className="flex w-full max-w-[800px] mx-auto items-center justify-between">
+    <header
+      style={{ marginTop }}
+      ref={ref}
+      className="fixed w-full border-b bg-white shadow-sm"
+    >
+      <div className="flex w-full max-w-[800px] h-[64px] mx-auto items-center justify-between">
         <h1>
           <Link href="/">오수빈 개발 블로그</Link>
         </h1>
