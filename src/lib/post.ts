@@ -1,4 +1,4 @@
-import { Post, PostMetadata } from "@/types/post";
+import { Post, PostMetadata, CategoryDetail } from "@/types/post";
 import dayjs from "dayjs";
 import fs from "fs";
 import { sync } from "glob";
@@ -79,4 +79,28 @@ const sortPostList = (postList: Post[]) => {
 export const getLatestPostList = async (category?: string) => {
   const postList = await getPostList(category);
   return sortPostList(postList);
+};
+
+export const getAllPostCount = async () => (await getPostList()).length;
+
+export const getCategoryDetailList = async () => {
+  const postList = await getPostList();
+  const result: { [key: string]: number } = {};
+  for (const post of postList) {
+    const category = post.categoryPath;
+    if (result[category]) {
+      result[category] += 1;
+    } else {
+      result[category] = 1;
+    }
+  }
+  const detailList: CategoryDetail[] = Object.entries(result).map(
+    ([category, count]) => ({
+      dirName: category,
+      publicName: getCategoryPublicName(category),
+      count,
+    })
+  );
+
+  return detailList;
 };
